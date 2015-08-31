@@ -140,7 +140,7 @@ class AltMeetup(object):
             # Prepare for next iteration
             next_url = resp['meta']['next']
 
-            print "num results:", len(resp['results']), next_url, path, params#~
+            #print "num results:", len(resp['results']), next_url, path, params#~
 
             if next_url == "":
                 break

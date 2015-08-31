@@ -14,7 +14,7 @@ event members (IDs), and attendees.
 
 from pprint import pprint
 import json
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 import os
 from datetime import datetime
 
@@ -26,6 +26,7 @@ import crawl_tools
 MONGO_DBNAME = "meetupdotcom"
 COLL_USERS = "users"
 COLL_GROUPS = "groups"
+COLL_ATTENDANCE = 'event_attendance'
 
 #
 # Misc
@@ -163,41 +164,12 @@ def get_events(alt_api, group_id, dt_frm, dt_to, status='past'):
     return events
 
 
-def expand_event(alt_api, mdb, event):
-    """
-    Expand the event with additional information
-
-    Add list of attendees to the event. These will be stored in:
-        event['attendee_ids'].
-
-    Any members encountered in this process will be added to the mongo database.
-
-    `event`: Event JSON.
-    """
-    eid = event['id']
-
-    # obtain member IDs
-    attendees = alt_api.rsvps(event_id=eid, rsvp='yes')
-
-    ids = []
-    for attendee in attendees:
-        if attendee['rsvp_id'] == -1:
-            # host who has not RSVP'd
-            continue
-        ids.append(attendee['member']['member_id'])
-
-    # crawl if necessary
-    for uid in ids:
-        crawl_add_user(alt_api, mdb, uid)
-
-    # insert IDs in to event object
-    event['attendee_ids'] = ids
-
-
 def expand_meetup_group(alt_api, mdb, group, events_from, events_to):
     """
-    Expand the group JSON with list of members, events, and RSVPs.
+    Expand the group JSON with list of members, events.
     Any users encountered in this process will be added to the mongo database.
+
+    RSVPs (attendance) will be handled later.
 
     Members:
     IDs of members stored in:
@@ -206,8 +178,7 @@ def expand_meetup_group(alt_api, mdb, group, events_from, events_to):
     Events:
     JSON for each event (in period events_from to events_to) stored in:
         group['events_in_window']
-    Each event is also expanded with an 'attendee_ids' field, giving list of
-    user IDs..
+    This will not include attendees (see: event_attendance collection).
 
     `group`: Group JSON.
     """
@@ -228,11 +199,97 @@ def expand_meetup_group(alt_api, mdb, group, events_from, events_to):
     #
     # events
     events = get_events(alt_api, gid, events_from, events_to)
-    for event in events:
-        expand_event(alt_api, mdb, event)
-
     group['events_in_window'] = events
 
+
+#
+# Crawling event attendance
+
+def has_event_attendees(mdb, event_id):
+    """
+    Returns True if we already have a list of attendees for the event
+    `event_id`.
+    """
+    ret = mdb[COLL_ATTENDANCE].find_one({'_id': event_id})
+    return ret is not None
+
+
+def add_event_attendees(mdb, event_attendees):
+    """
+    Add event attendance info to mongodb, if not already added.
+    event_attendees:
+        A dict of form {event_id:..., attendee_ids: [...]}
+    """
+    event_id = event_attendees['event_id']
+
+    if not has_event_attendees(mdb, event_id):
+        out = OrderedDict(event_attendees)
+        out['_id'] = event_id
+
+        assert 'attendee_ids' in event_attendees
+
+        _id = mdb[COLL_ATTENDANCE].insert_one(out)
+
+
+def crawl_event_attendance(alt_api, mdb):
+    """
+    Collect and store the attendance (RSVP) information for each event in 
+    `events`.
+
+    The COLL_ATTENDANCE will store documents of the form:
+        event_id -> {_id, attendees:[list of user IDs]}
+
+    If an event attendee has not been seen before, we additionally collect
+    their data and store it in the user collection.
+
+    Note: event IDs are alphanumeric.
+    """
+    #
+    # Obtain to do list...
+    all_event_ids = []
+    for group in mdb[COLL_GROUPS].find():
+        for event in group['events_in_window']:
+            all_event_ids.append(event['id'])
+
+    seen_event_ids = [attendance_doc['event_id'] for attendance_doc in mdb[COLL_ATTENDANCE].find()]
+
+    unseen_event_ids = frozenset(all_event_ids) - frozenset(seen_event_ids)
+    unseen_event_ids = list(unseen_event_ids)
+
+    #
+    # Now crawl attendance info for each event in `unseen_event_ids`
+    # We'll progress in chunks of 50 events
+    while len(unseen_event_ids) > 0:
+        # fill buffer
+        next_ids = []
+        while len(next_ids) <= 50 and len(unseen_event_ids) > 0:
+            next_ids.append(unseen_event_ids.pop())
+
+        print "checking %s events | %s events remaining" % (len(next_ids), len(unseen_event_ids))
+
+        # retrieve attendance info
+        event2attendees = defaultdict(lambda: set())
+
+        event_ids_str = ','.join(next_ids)
+        results = alt_api.rsvps(event_id=event_ids_str, rsvp='yes')
+        for result in results:
+            if result['rsvp_id'] == -1:
+                # host who has not RSVP'd
+                continue
+
+            event_id = result['event']['id']
+            user_id = result['member']['member_id']
+
+            if not has_user(mdb, user_id):
+                crawl_add_user(alt_api, mdb, user_id)
+
+            event2attendees[event_id].add(user_id)
+
+        # save attendance info
+        for event_id, attendee_ids in event2attendees.iteritems():
+            attendee_ids = list(attendee_ids)
+            out = {'event_id': event_id, 'attendee_ids': attendee_ids}
+            add_event_attendees(mdb, out)
 
 
 def main():
@@ -255,11 +312,15 @@ def main():
 
     #
     #
-    # Crawl
+    # Crawl -- expand groups, obtain members
     #
+    print "\nSTAGE 1: Expand groups"
     for country, city2groups in countries2citygroups.iteritems():
         print country
         for city_ident, groups in city2groups.iteritems():
+            if 'Swansea' not in city_ident:
+                continue
+
             print country, "\t", city_ident
 
             #if 'Cardiff' not in city_ident:
@@ -277,6 +338,8 @@ def main():
                 expand_meetup_group(alt_api, mdb, group, events_from, events_to)
                 add_group(mdb, group)
 
+    print "\nSTAGE 2: Crawl attendance for each event"
+    crawl_event_attendance(alt_api, mdb)
 
 if __name__ == "__main__":
     main()
