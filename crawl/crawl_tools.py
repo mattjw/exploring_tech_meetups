@@ -84,13 +84,14 @@ class AltMeetup(object):
 
         More info at: http://www.meetup.com/meetup_api/#limits
         """
+        response = None
         try:
             response = requests.get(url=url)
             if response.status_code != 200:
                 raise StandardError()
         except StandardError as ex:
-            print response.url
-            print response.json()
+            print url
+            print response
             raise ex
 
         out = response.json()

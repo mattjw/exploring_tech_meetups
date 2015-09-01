@@ -262,19 +262,25 @@ def crawl_event_attendance(alt_api, mdb):
     while len(unseen_event_ids) > 0:
         # fill buffer
         next_ids = []
-        while len(next_ids) <= 50 and len(unseen_event_ids) > 0:
+        while len(next_ids) < 50 and len(unseen_event_ids) > 0:
             next_ids.append(unseen_event_ids.pop())
 
         print "checking %s events | %s events remaining" % (len(next_ids), len(unseen_event_ids))
+        #print "querying", next_ids #~
 
         # retrieve attendance info
         event2attendees = defaultdict(lambda: set())
+        for eid in next_ids:
+            # we'll preemptively force in the (empty) list of attendees here,
+            # because some times there are events with no attendees
+            event2attendees[eid] = set()
 
         event_ids_str = ','.join(next_ids)
         results = alt_api.rsvps(event_id=event_ids_str, rsvp='yes')
         for result in results:
             if result['rsvp_id'] == -1:
                 # host who has not RSVP'd
+                print "no RSVP"
                 continue
 
             event_id = result['event']['id']
@@ -289,6 +295,8 @@ def crawl_event_attendance(alt_api, mdb):
         for event_id, attendee_ids in event2attendees.iteritems():
             attendee_ids = list(attendee_ids)
             out = {'event_id': event_id, 'attendee_ids': attendee_ids}
+
+            #print "saved attendance doc", out
             add_event_attendees(mdb, out)
 
 
@@ -318,13 +326,10 @@ def main():
     for country, city2groups in countries2citygroups.iteritems():
         print country
         for city_ident, groups in city2groups.iteritems():
-            if 'Swansea' not in city_ident:
-                continue
+            #if 'Swansea' not in city_ident:
+            #    continue
 
             print country, "\t", city_ident
-
-            #if 'Cardiff' not in city_ident:
-            #    continue #~
 
             # full supplementary crawl of each group
             for group in groups:
