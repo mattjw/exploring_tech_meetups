@@ -22,6 +22,7 @@ __copyright__ = "Copyright (c) 2015 Matt J Williams"
 import json
 import collections
 from pprint import pprint
+from spatial_units import espon_fua
 
 import pymongo
 
@@ -72,7 +73,17 @@ def get_city2groups(country_code):
     Member IDs will not be expanded. 
     """
     if country_code == 'GB':
-        ident_func = lambda group: "%s:%s:%s" % (group['country'], '', group['city'])
+        geolookup = espon_fua.GeoLookup.get_singleton()
+        def f(group):
+            lat = group['lat']
+            lon = group['lon']
+            fua_city_obj = geolookup.lookup(lon, lat)
+            if fua_city_obj is None:
+                return '<unknown>'
+            else:
+                return fua_city_obj
+        ident_func = f
+        #ident_func = lambda group: "%s:%s:%s" % (group['country'], '', group['city'])
     elif country_code == 'US':
         ident_func = lambda group: "%s:%s:%s" % (group['country'], group['country'], group['city'])
     elif country_code == 'IE':
