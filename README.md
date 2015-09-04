@@ -22,12 +22,12 @@ The data collection pipeline is as follows:
 2. You may wish to edit `dat/geonames_top_cities.json` to remove some redundant cities in the Geonames data, depending on the chosen countries.
 3. `crawl_groups.py`: Carries out a proximity crawl using the cities obtained from the gazetteer. Using the processed gazeteer (from previous step), retrieves meetup groups within proximity to each POI (i.e., cities). Outputs to `dat/groups_crawl/`. This is an initial, very broad, crawl of groups, that is to be filtered in subsequent steps.
 4. `collect_city_groups.py`: Collects the groups from the proximity crawl, removing duplicates as necessary. Outputs to `dat/city_meetup_groups`.
-5. `crawl_group_activity.py`: Using the sanitised and de-duplicated groups obtained from the previous steps, this script crawls a range of additional group attributes and stores the results (including the meetup groups) in a mongodb datastore. The additional attributes include: group events, group membership, attendance at events, and any users encountered along the way. This crawl can take a while (10+ hours for the UK). If the script is prematurely halted, it will re-start from where it left off.
+5. `crawl_group_activity.py`: Using the sanitised and de-duplicated groups obtained from the previous steps, this script crawls a range of additional group attributes and stores the results (including the meetup groups) in a MongoDB datastore. The additional attributes include: group events, group membership, attendance at events, and any users encountered along the way. This crawl can take a while (10+ hours for the UK). If the script is prematurely halted, it will re-start from where it left off.
 
-The resulting mongodb database, `meetupdotcom`, consists of the following collections:
+The resulting MongoDB database, `meetupdotcom`, consists of the following collections:
 
-* `users`: Each document is a member. JSON crawled from the `members` endpoint.
-* `groups`: Each meetup is a meetup group. JSON as cralwed from the `groups` endpoint, supplemented with list of the group's events crawled from the `events` endpoint.
+* `users`: Each document is a Meetup member. Crawled from the `members` endpoint.
+* `groups`: Each document is a Meetup group. Crawled from the `groups` endpoint, supplemented with list of the group's events crawled from the `events` endpoint.
 * `event_attendance`: Each document describes member attendance at a particular meetup event. The document specifies an event id `event_id` and list of member ids (`attendee_ids`).
 
 

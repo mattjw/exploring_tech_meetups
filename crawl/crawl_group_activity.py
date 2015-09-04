@@ -248,6 +248,10 @@ def crawl_event_attendance(alt_api, mdb):
     # Obtain to do list...
     all_event_ids = []
     for group in mdb[COLL_GROUPS].find():
+        if group['country'] != 'GB':
+            print group['name'], "    --    discarding non-GB [%s]" % group['country'] #~
+            continue
+
         for event in group['events_in_window']:
             all_event_ids.append(event['id'])
 
@@ -307,7 +311,7 @@ def main():
     #
 
     # Params
-    events_from = datetime(2013, 1, 1)
+    events_from = datetime(2012, 1, 1)
     events_to = datetime(2015, 1, 1)
 
     # Load
@@ -317,6 +321,9 @@ def main():
     countries2citygroups = load_countries()
 
     mdb = mongo_connect()
+
+    print "from", events_from
+    print "to", events_to
 
     #
     #
@@ -334,10 +341,12 @@ def main():
             # full supplementary crawl of each group
             for group in groups:
                 gid = group['id']
+
                 if has_group(mdb, gid):
                     # do not re-crawl
                     print "\t", group['name'], "<SKIPPING>" #~
                     continue
+
                 print "\t", group['name'], "<CRAWLING>" #~
 
                 expand_meetup_group(alt_api, mdb, group, events_from, events_to)

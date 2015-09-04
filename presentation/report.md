@@ -9,6 +9,12 @@ Findings.
 
 PCA. Many areas have similar profiles: e.g., many places have a web development meetup group. What's more interesting is the other differences.
 
+City-city connectivity. Raw co-visits: London is, unsurprisingly, a hub, simply beacuse it has a large number of groups there. And, good transport access to other locations. As we saw earlier, some cities are much more active than others. In the gravity model, this means they have more mass, and so attract interactions with other cities, especially other cities that also have high mass.
+
+So how about we adjust for the size of the cities? Now we see London dimish. Its remaining significant interactions are with Cambridge and Oxford (the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_triangle_(universities))?), and Brighton (a well-known tech hub). There are many factors that influence how many people visit both cities, including access, transport, and intereset. 
+Also, London is full of many people who haven't needed to move to visit another place -- the tech community is on their doorstep. In other cities, one might need to travel further, to a neighbouring hub, (or maybe to london!) to visit.
+
+This gives us an idea of the amount of movement people have to do.
 
 # Supplementary Technical Notes
 
@@ -29,8 +35,19 @@ The full list of the 46 FUAs in the UK, including their constituent regions, can
 Anotehr example is Eurostat's [NUTS 2](https://en.wikipedia.org/wiki/NUTS_2_statistical_regions_of_the_United_Kingdom), which divides the UK into 40 regions. Example regions include Greater Manchester, 
 
 
+## Adjusting co-visitors
+
+Exact equation we use is:
+
+$$\frac{s_{ij}}{m_im_j}$$
+
+
 ## Clustering
 
 
 ## Topic extraction
 The topics used in the analysis are as provided by the Meetup API. Of course, the quality and semantics of these topics is not necessarily consistent across all gruops. For example, `Web Development`, `Web Technology`, and `Web Design` have much in common.
+
+## Misc.
+
+* Ideally, look at home-to-meetup patterns, but identifying home location is not trivial. Note that these may have changed in four years.
