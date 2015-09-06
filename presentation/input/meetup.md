@@ -16,6 +16,34 @@ Also, London is full of many people who haven't needed to move to visit another 
 
 This gives us an idea of the amount of movement people have to do.
 
+It would be great to extend this analysis with the hometowns of each user. 
+
+Future work:
+
+**Can we match the ecosystem of each UK city with a counterpart in the US?** <br/>
+As we've seen, the UK doesn't have a large number of cities for us to compare and contrast, but here are many cities in the US we might compare against. For a particular UK city we could match it with one or more US cities of a similar size and set of interests (e.g., extending group clustering we applied here).
+
+**What drives clusters of cities?**<br/>
+For example, in our analysis of integration between cities, we saw that there are places outside of London that have strong connections, such as the Bristol-Cardiff community, and midlands.
+
+# Graphics
+
+![Cities Similarity](cities_mds_similarity.png)
+
+![Choropleth](uk_choropleth.png)
+
+![Co-Visitor Patterns](uk_covisitors.png)
+
+![City Groups Distributions](uk_num_groups_bar_charts.png)
+
+# Materials
+
+All scripts and code (including the source Markdown for this blog post) are available at the following Github repository:
+
+[`https://github.com/mattjw/exploring_tech_meetups`](https://github.com/mattjw/exploring_tech_meetups)
+
+
+
 # Supplementary Technical Notes
 
 ## Crawling
@@ -44,6 +72,7 @@ $$\frac{s_{ij}}{m_im_j}$$
 
 ## Clustering
 
+For simplicity in this initial investigation, we'll just allocate each group to one type. [LSA, hidden topic space of co-occurring keywords. Simple approach for now, but more work needed to 
 
 ## Topic extraction
 The topics used in the analysis are as provided by the Meetup API. Of course, the quality and semantics of these topics is not necessarily consistent across all gruops. For example, `Web Development`, `Web Technology`, and `Web Design` have much in common.

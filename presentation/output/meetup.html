@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>Introduction</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="introduction"><a class="header-link" href="#introduction"></a>Introduction</h1>
+<p>Premise, background (other posts). Data collection.</p>
+<h1 id="analysis"><a class="header-link" href="#analysis"></a>Analysis</h1>
+<p>Findings.</p>
+<p>PCA. Many areas have similar profiles: e.g., many places have a web development meetup group. What&#39;s more interesting is the other differences.</p>
+<p>City-city connectivity. Raw co-visits: London is, unsurprisingly, a hub, simply beacuse it has a large number of groups there. And, good transport access to other locations. As we saw earlier, some cities are much more active than others. In the gravity model, this means they have more mass, and so attract interactions with other cities, especially other cities that also have high mass.</p>
+<p>So how about we adjust for the size of the cities? Now we see London dimish. Its remaining significant interactions are with Cambridge and Oxford (the <a href="https://en.wikipedia.org/wiki/Golden_triangle_(universities">Golden Triangle</a>)?), and Brighton (a well-known tech hub). There are many factors that influence how many people visit both cities, including access, transport, and intereset. 
+Also, London is full of many people who haven&#39;t needed to move to visit another place -- the tech community is on their doorstep. In other cities, one might need to travel further, to a neighbouring hub, (or maybe to london!) to visit.</p>
+<p>This gives us an idea of the amount of movement people have to do.</p>
+<p>It would be great to extend this analysis with the hometowns of each user. </p>
+<p>Future work:</p>
+<p><strong>Can we match the ecosystem of each UK city with a counterpart in the US?</strong> <br/>
+As we&#39;ve seen, the UK doesn&#39;t have a large number of cities for us to compare and contrast, but here are many cities in the US we might compare against. For a particular UK city we could match it with one or more US cities of a similar size and set of interests (e.g., extending group clustering we applied here).</p>
+<p><strong>What drives clusters of cities?</strong><br/>
+For example, in our analysis of integration between cities, we saw that there are places outside of London that have strong connections, such as the Bristol-Cardiff community, and midlands.</p>
+<h1 id="graphics"><a class="header-link" href="#graphics"></a>Graphics</h1>
+<p class="img-container"><img src="cities_mds_similarity.png" alt="Cities Similarity"></p>
+<p class="img-container"><img src="uk_choropleth.png" alt="Choropleth"></p>
+<p class="img-container"><img src="uk_covisitors.png" alt="Co-Visitor Patterns"></p>
+<p class="img-container"><img src="uk_num_groups_bar_charts.png" alt="City Groups Distributions"></p>
+<h1 id="materials"><a class="header-link" href="#materials"></a>Materials</h1>
+<p>All scripts and code (including the source Markdown for this blog post) are available at the following Github repository:</p>
+<p><a href="https://github.com/mattjw/exploring_tech_meetups"><code>https://github.com/mattjw/exploring_tech_meetups</code></a></p>
+<h1 id="supplementary-technical-notes"><a class="header-link" href="#supplementary-technical-notes"></a>Supplementary Technical Notes</h1>
+<h2 id="crawling"><a class="header-link" href="#crawling"></a>Crawling</h2>
+<h2 id="city-regional-divisions"><a class="header-link" href="#city-regional-divisions"></a>City/Regional Divisions</h2>
+<p>There are <a href="https://theidpblog.files.wordpress.com/2014/08/hierarchical_representation_of_uk_statistical_geographies_july_2014.pdf">many ways</a> to divide the UK into regions (also called &#39;spatial units&#39;), and many ways we might define a city.</p>
+<p>Ideally, we want to choose a definition of region/city for which we also have population statistics available, which will allow us to compare Meetup activity with the area&#39;s inhabitants. Plus, we want the definition to be consistently applied throughout the UK.</p>
+<p>Fortunately, the European Union <a href="http://database.espon.eu/db2/home">ESPON</a> project undertook the task of defining <a href="https://en.wikipedia.org/wiki/List_of_metropolitan_areas_in_the_United_Kingdom">metropolitan regions</a> across 29 EU countries, including the UK. In particular, they define &#39;<em>Functional Urban Areas</em>&#39; (FUAs). An FUA consists of an urban core, plus surrounding regions who have a strong commuter relationship with the core. This is a very convenient definition for our analysis, since it describes regions in which Meetup usrse are likely to travel to visit an event. (Incidentally, the US Census Bureau&#39;s definition of <a href="https://www.census.gov/geo/reference/gtc/gtc_cbsa.html">Core-based Statistical Areas</a> is very similar, so we could extend this analysis to the US quite easily.)</p>
+<p>The full list of the 46 FUAs in the UK, including their constituent regions, can be found <a href="https://en.wikipedia.org/wiki/List_of_metropolitan_areas_in_the_United_Kingdom">here</a>. The source data files, including boundaries and populations, can be found <a href="http://database.espon.eu/db2/resource?idCat=43">here</a> under &#39;Functional Urban Areas database&#39; . Most of the urban regions are intuitively grouped. There are a few surprises, such as Bath being subsumed by the Bristol Metropolitan Area, but in general it is a good approximation for this initial analysis.</p>
+<p>Anotehr example is Eurostat&#39;s <a href="https://en.wikipedia.org/wiki/NUTS_2_statistical_regions_of_the_United_Kingdom">NUTS 2</a>, which divides the UK into 40 regions. Example regions include Greater Manchester, </p>
+<h2 id="adjusting-co-visitors"><a class="header-link" href="#adjusting-co-visitors"></a>Adjusting co-visitors</h2>
+<p>Exact equation we use is:</p>
+<p>$$\frac{s_{ij}}{m_im_j}$$</p>
+<h2 id="clustering"><a class="header-link" href="#clustering"></a>Clustering</h2>
+<p>For simplicity in this initial investigation, we&#39;ll just allocate each group to one type. [LSA, hidden topic space of co-occurring keywords. Simple approach for now, but more work needed to </p>
+<h2 id="topic-extraction"><a class="header-link" href="#topic-extraction"></a>Topic extraction</h2>
+<p>The topics used in the analysis are as provided by the Meetup API. Of course, the quality and semantics of these topics is not necessarily consistent across all gruops. For example, <code>Web Development</code>, <code>Web Technology</code>, and <code>Web Design</code> have much in common.</p>
+<h2 id="misc-"><a class="header-link" href="#misc-"></a>Misc.</h2>
+<ul class="list">
+<li>Ideally, look at home-to-meetup patterns, but identifying home location is not trivial. Note that these may have changed in four years.</li>
+</ul>
+    </article>
+  </body>
+</html>
