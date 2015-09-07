@@ -2,7 +2,7 @@ An exploratory analysis of technology communities across the UK using data from 
 
 Data is crawled from the Meetup API. See below for a description of the data collection process.
 
-The results of the analysis can be found in the report in the `presentation` directory. Data analysis was carried out in the IPython Notebook `analysis/meetup_analysis.ipynb`.
+The results of the analysis can be found in the report in the `presentation` directory. A typeset version can be viewed [here](http://mattjw.github.io/exploring_tech_meetups/presentation/output/meetup.html). Data analysis was carried out in the IPython Notebook `analysis/meetup_analysis.ipynb`.
 
 
 ## Data Collection

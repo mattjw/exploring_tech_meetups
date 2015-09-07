@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+#
+# Author:   Matt J Williams
+#           http://www.mattjw.net
+#           mattjw@mattjw.net
+# Date:     2015
+# License:  MIT License
+#           http://opensource.org/licenses/MIT
+
+
 """
 Crawl activity for a previously obtained dataset of groups.
 Persistent storage via mongodb.
@@ -9,7 +19,16 @@ documents.
 groups document:
 Same as group crawled via group endpoint, but with additional history of events,
 event members (IDs), and attendees.
+
+event_attendance document:
+Represents a list of users (user IDs) who attended an event.
 """
+
+
+__author__ = "Matt J Williams"
+__author_email__ = "mattjw@mattjw.net"
+__license__ = "MIT"
+__copyright__ = "Copyright (c) 2015 Matt J Williams"
 
 
 from pprint import pprint
@@ -248,10 +267,6 @@ def crawl_event_attendance(alt_api, mdb):
     # Obtain to do list...
     all_event_ids = []
     for group in mdb[COLL_GROUPS].find():
-        if group['country'] != 'GB':
-            print group['name'], "    --    discarding non-GB [%s]" % group['country'] #~
-            continue
-
         for event in group['events_in_window']:
             all_event_ids.append(event['id'])
 

@@ -62,7 +62,8 @@ def get_alt_meetup_api():
     api = AltMeetup(api_key)
     return api
 
-DEFAULT_PAGINATION_COUNT = 200  # 200 is API default if page is missing
+
+DEFAULT_PAGINATION_COUNT = 200  # 200 is API default if `page` is missing
 
 class AltMeetup(object):
     def __init__(self, api_key):

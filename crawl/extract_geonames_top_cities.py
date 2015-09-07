@@ -1,5 +1,21 @@
+# -*- coding: utf-8 -*-
+#
+# Author:   Matt J Williams
+#           http://www.mattjw.net
+#           mattjw@mattjw.net
+# Date:     2015
+# License:  MIT License
+#           http://opensource.org/licenses/MIT
+
+
 import unicodecsv as csv
 import json
+
+
+__author__ = "Matt J Williams"
+__author_email__ = "mattjw@mattjw.net"
+__license__ = "MIT"
+__copyright__ = "Copyright (c) 2015 Matt J Williams"
 
 
 def load_geonames_cities(countries):
