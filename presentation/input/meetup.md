@@ -1,6 +1,6 @@
 # Exploring the Geography and Composition of Technology Meetup Communities in the UK
 
-– *Matthew Williams* –
+*Matthew Williams*
 
 [Meetup](http://www.meetup.com/) provides a rich data source for studying the composition of technology communities across the UK.
 
@@ -44,7 +44,7 @@ In the following charts, we visualise the strength of integration among pairs of
 
 The network in the left-hand figure shows the total number of users in common. London emerges as a hub, having strong connections to most other cities. This isn't surprising – London has very good transport links (both land and air) with the rest of the UK, and hosts many unique speakers and events that can attract attendees from all over the country. Also, by simply being a large city with many active Meetup users, London has more people who have potentially visited other cities.
 
-We can re-think of this analysis in terms of the [Gravity model of trade and migration](https://en.wikipedia.org/wiki/Gravity_model_of_trade) – each city has a mass (its number of local users), and larger cities have more potential to attract visitors from other cities (and even more if they're close). The right-hand figure shows the network after we normalise by the masses of the two respective cities. London's significance is now diminished, and its remaining prominent interactions are with Cambridge and Oxford (the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_triangle_(universities), with many highly skilled STEM professionals, plus extremely good transport access), and Brighton (also an established tech hub).
+We can re-think of this analysis in terms of the [Gravity model of trade and migration](https://en.wikipedia.org/wiki/Gravity_model_of_trade) – each city has a mass (its number of local users), and larger cities have more potential to attract visitors from other cities (and even more if they're close). The right-hand figure shows the network after we normalise by the masses of the two respective cities. London's significance is now diminished, and its remaining prominent interactions are with Cambridge and Oxford (the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_triangle_(universities)), with many highly skilled STEM professionals, plus extremely good transport access), and Brighton (also an established tech community).
 
 Some key pairs of neighbouring cities become clear: Cardiff and Bristol; Nottingham and Leicester; Glasgow and Edinburgh. We also see a cluster of interacting communities in the Midlands. It is likely that due to their smaller size, these communities rely on one another. This contrasts with London, which has a very well-developed self-contained tech scene. Most residents will be able to find tech communities to suit their needs without ever leaving the Greater London area.
 
@@ -109,7 +109,7 @@ The full list of the 46 FUAs in the UK, including their constituent regions, can
 
 A latent topic space was learnt on the whole dataset of 1,588 groups UK Meetups groups using Latest Semantic Analysis. Different numbers of features were compared, and good performance was found at around 100-200 topics (at least 50% of variance explained). The number of clusters was decided with the Elbow Method using intra-cluster mean-squared error, resulting in seven clusters. Each of the seven clusters was then manually labelled according to the keyword patterns found in each cluster. Clusters without a clear theme were marked as 'Unclassified'.
 
-To obtain the similarity map, cosine similarity was used to measure the distances between cities according to their community profile. The similarity map was obtained by using [multi-dimensional scaling](https://en.wikipedia.org/wiki/Multidimensional_scaling) to visualise these distances in two dimensions.
+To obtain the similarity map, cosine similarity was used to measure the similarity between cities according to their community profile. The similarity map was obtained by using [multi-dimensional scaling](https://en.wikipedia.org/wiki/Multidimensional_scaling) to visualise these similarities in two dimensions.
 
 
 
