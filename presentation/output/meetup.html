@@ -3,16 +3,49 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-    <title>Introduction</title>
+    <title>Exploring the Geography and Composition of Technology Meetup Communities in the UK</title>
     <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
     <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
   </head>
   <body>
-    <article class="markdown-body"><h1 id="introduction"><a class="header-link" href="#introduction"></a>Introduction</h1>
-<p>Premise, background (other posts). Data collection.</p>
-<h1 id="analysis"><a class="header-link" href="#analysis"></a>Analysis</h1>
-<p>Findings.</p>
+    <article class="markdown-body"><h1 id="exploring-the-geography-and-composition-of-technology-meetup-communities-in-the-uk"><a class="header-link" href="#exploring-the-geography-and-composition-of-technology-meetup-communities-in-the-uk"></a>Exploring the Geography and Composition of Technology Meetup Communities in the UK</h1>
+<p>– <em>Matt J Williams</em> –</p>
+<p><a href="http://www.meetup.com/">Meetup</a> provides a rich dataset for the study the composition of tech communities in the UK, and in other counties across the world.</p>
+<p>As a regular user of Meetup, I have experience first-hand its value in discovering communities and keeping in touch with them. For organisers and community leaders, Meetup is an extremely useful tool for managing events.</p>
+<p>For researchers and data scientists interested in the UK&#39;s technology landscape, Meetup can give us insight into what kind of skills are dominant in an area, and what makes a community successful, as demonstrated in this <a href="http://www.nesta.org.uk/blog/using-meetup-data-explore-uk-digital-tech-landscape">recent post</a> on Nesta&#39;s blog.</p>
+<p>In this blog post, I present an initial look at two related questions regarding tech communities in the UK:</p>
+<ul class="list">
+<li>How does geography shape the interactions between different communities?</li>
+<li>What is the composition of the tech community in each city?</li>
+</ul>
+<p>Technical details on the methods used in this analysis can be found in the <a href="#suppmat">Supplementary Technical Notes</a> at the end of the post. All code and scripts are open source and available in <a href="https://github.com/mattjw/exploring_tech_meetups">this</a> Github repository.</p>
+<h2 id="the-data"><a class="header-link" href="#the-data"></a>The data</h2>
+<p>Using Meetup&#39;s <a href="http://www.meetup.com/meetup_api/">open API</a> I collected a dataset of all Meetup groups in the UK belonging to the &#39;Tech&#39; category, including their recent events and member profiles. These groups were obtained for the top 200 most-populated cities and towns in the UK, resulting in an initial dataset of 1,588 groups. Given the age of Meetup (almost 13 years old!), many of these groups may be defunct. To focus only on active communities, any groups that don&#39;t have at least one event with two or more attendees in the last three years were discarded.</p>
+<p>Rather than using Meetup&#39;s own city designations, we determine the metropolitan area each group belongs to by using the Eurostat&#39;s Functional Urban Areas (FUA) boundary data. This gives us with a consistent definition of an urban area across the UK (and even Europe, if we wanted to expand our study later), and comes with population statistics. For the rest of this post we&#39;ll use the FUA definition of city.</p>
+<p>The resulting dataset consists of 932 active groups. We further filter the data down by discarding cities with too few groups (four or fewer) for any meaningful analysis, giving 880 groups across 18 cities, and totalling 69,510 users.</p>
+<p>Unsurprisingly, London has the most active community, with 588 groups. As noted <a href="http://www.nesta.org.uk/blog/using-meetup-data-explore-uk-digital-tech-landscape">previously</a>, it would be interesting to compare Meetup activity with population size. As we see in the following chart, while London is among the most-active tech communities in the UK, Edinburgh and Cambridge are both ahead in density.</p>
+<p align=center>
+    <img width="423" src="uk_choropleth.png"/>
+</p>
+
+
+<h2 id="how-are-communities-shared-between-cities-"><a class="header-link" href="#how-are-communities-shared-between-cities-"></a>How are communities shared between cities?</h2>
+<p>To answer this question we can look at how many attendees each city has in common. Our dataset includes the list of members who RSVPd to each event in a city, and so we can quantify how many attendees a pair of cities has in common.</p>
+<p>In the following charts, we visualise the strength of integration among pairs of cities. The intensity of a link between two cities indicates the amount of overlap in their communities – the thicker the link the more in common. For many pairs of cities there are very few shared members, so we only visualise the top quartile of connections.</p>
+<p align=center>
+    <img width="717" src="uk_covisitors.png"/>
+</p>
+
+<p>The network in the left-hand figure shows the total number of users in common. London emerges as a hub, having strong connections to most other cities. This isn&#39;t surprising – London has very good transport links (both land and air) with the rest of the UK, and hosts many unique speakers and events that would attract attendees from across the country.</p>
+<p>Also, by simply being a large city with many active Meetup users, London has more users to have potentially visited other cities. We can think of this in terms of the <a href="https://en.wikipedia.org/wiki/Gravity_model_of_trade">Gravity model of trade and migration</a> – each city has a mass (its number of local users), and larger cities have more potential to attract visitors from other cities.</p>
+<p>The right-hand figure shows the network after we normalise by the masses of the two respective cities. London&#39;s role is now diminished, and its remaining significant interactions are with Cambridge and Oxford (let&#39;s not forget the <a href="https://en.wikipedia.org/wiki/Golden_triangle_(universities">Golden Triangle</a>, with many highly skilled STEM professionals, plus extremely good transport access), and Brighton (also an established tech hub).</p>
+<p>Some key pairs of neighbouring cities merge: Cardiff and Bristol; Nottingham and Leicester; Glasgow and Edinburgh. We also see denser connections around the central midlands.</p>
+<p>Of course, we have to make the assumption that a user physically attends an event they&#39;ve joined. I know from personal experience that this is not always true! At the least, however, , even if it&#39;s aspirational.</p>
+<p><em>(Note: An alternative way to do this would be to associate each user with a home city and then study their visits to other locations. Although the API provides the current city for a user, we&#39;d need to also check that they haven&#39;t moved home town during the observation period.)</em></p>
+<p>Geography
+note that this is only an approximation of the real behaviour. Ideally we would identify a user&#39;s home location. </p>
+<h2 id="what-is-the-composition-of-each-community-"><a class="header-link" href="#what-is-the-composition-of-each-community-"></a>What is the composition of each community?</h2>
 <p>PCA. Many areas have similar profiles: e.g., many places have a web development meetup group. What&#39;s more interesting is the other differences.</p>
 <p>City-city connectivity. Raw co-visits: London is, unsurprisingly, a hub, simply beacuse it has a large number of groups there. And, good transport access to other locations. As we saw earlier, some cities are much more active than others. In the gravity model, this means they have more mass, and so attract interactions with other cities, especially other cities that also have high mass.</p>
 <p>So how about we adjust for the size of the cities? Now we see London dimish. Its remaining significant interactions are with Cambridge and Oxford (the <a href="https://en.wikipedia.org/wiki/Golden_triangle_(universities">Golden Triangle</a>)?), and Brighton (a well-known tech hub). There are many factors that influence how many people visit both cities, including access, transport, and intereset. 
@@ -20,32 +53,46 @@ Also, London is full of many people who haven&#39;t needed to move to visit anot
 <p>This gives us an idea of the amount of movement people have to do.</p>
 <p>It would be great to extend this analysis with the hometowns of each user. </p>
 <p>Future work:</p>
+<p>Nottingham and Cardiff are most dissimilar. </p>
+<h2 id="conclusions-and-outlook"><a class="header-link" href="#conclusions-and-outlook"></a>Conclusions and Outlook</h2>
+<p>This has been a first exploration of the tech communities across the UK. Raising some intersting questions for futher analysis.</p>
 <p><strong>Can we match the ecosystem of each UK city with a counterpart in the US?</strong> <br/>
 As we&#39;ve seen, the UK doesn&#39;t have a large number of cities for us to compare and contrast, but here are many cities in the US we might compare against. For a particular UK city we could match it with one or more US cities of a similar size and set of interests (e.g., extending group clustering we applied here).</p>
 <p><strong>What drives clusters of cities?</strong><br/>
-For example, in our analysis of integration between cities, we saw that there are places outside of London that have strong connections, such as the Bristol-Cardiff community, and midlands.</p>
+For example, in our analysis of integration between cities, we saw that there are places outside of London that have strong connections, such as the Bristol-Cardiff community, and midlands. Bristol and Cardiff are disimilar in their make-up -- does this drive the travel between them? Do small local communities have to travel more, to access specialists in other fields? Drive innovation in regions outsie of London.</p>
+<p>Relative to the the number of active users in London, very few people leave. This is not surprising -- London has an abundance of most tech areas. Other places, however, become more specialised.</p>
+<p>Match communities in different countries, e.g., the US. Then compare other features of their local innovation ecosystems to see if there are any differences, and potentially compare different policy implications.</p>
 <h1 id="graphics"><a class="header-link" href="#graphics"></a>Graphics</h1>
-<p class="img-container"><img src="cities_mds_similarity.png" alt="Cities Similarity"></p>
-<p class="img-container"><img src="uk_choropleth.png" alt="Choropleth"></p>
-<p class="img-container"><img src="uk_covisitors.png" alt="Co-Visitor Patterns"></p>
-<p class="img-container"><img src="uk_num_groups_bar_charts.png" alt="City Groups Distributions"></p>
-<h1 id="materials"><a class="header-link" href="#materials"></a>Materials</h1>
-<p>All scripts and code (including the source Markdown for this blog post) are available at the following Github repository:</p>
+<p align=center>
+    <img width="529" src="cities_mds_similarity.png"/>
+</p>
+
+<p align=center>
+    <img width="722" src="uk_num_groups_bar_charts.png"/>
+</p>
+
+
+<h1 id="data-and-materials"><a class="header-link" href="#data-and-materials"></a>Data and Materials</h1>
+<p>All scripts and code (including the Markdown for this blog post) are available at the following Github repository:</p>
 <p><a href="https://github.com/mattjw/exploring_tech_meetups"><code>https://github.com/mattjw/exploring_tech_meetups</code></a></p>
 <h1 id="supplementary-technical-notes"><a class="header-link" href="#supplementary-technical-notes"></a>Supplementary Technical Notes</h1>
-<h2 id="crawling"><a class="header-link" href="#crawling"></a>Crawling</h2>
+<p><a name="suppmat"></a></p>
+<p>The following notes give further detail on the methods used in this analysis.</p>
+<h2 id="collecting-groups"><a class="header-link" href="#collecting-groups"></a>Collecting Groups</h2>
+<p>The Meetup API provides a method for querying groups that belong to a particular city or are in proximity to a particular location. <a href="http://www.geonames.org/export/">Geonames</a> provides an open global gazetteer of cities with populations above 1,000 people. The crawler was seeded with the 200 most-populated cities in the UK according to Geonames. Groups in proximity to these cities were crawled. Duplicate groups (e.g., due to nearby cities) were discarded.</p>
 <h2 id="city-regional-divisions"><a class="header-link" href="#city-regional-divisions"></a>City/Regional Divisions</h2>
 <p>There are <a href="https://theidpblog.files.wordpress.com/2014/08/hierarchical_representation_of_uk_statistical_geographies_july_2014.pdf">many ways</a> to divide the UK into regions (also called &#39;spatial units&#39;), and many ways we might define a city.</p>
 <p>Ideally, we want to choose a definition of region/city for which we also have population statistics available, which will allow us to compare Meetup activity with the area&#39;s inhabitants. Plus, we want the definition to be consistently applied throughout the UK.</p>
 <p>Fortunately, the European Union <a href="http://database.espon.eu/db2/home">ESPON</a> project undertook the task of defining <a href="https://en.wikipedia.org/wiki/List_of_metropolitan_areas_in_the_United_Kingdom">metropolitan regions</a> across 29 EU countries, including the UK. In particular, they define &#39;<em>Functional Urban Areas</em>&#39; (FUAs). An FUA consists of an urban core, plus surrounding regions who have a strong commuter relationship with the core. This is a very convenient definition for our analysis, since it describes regions in which Meetup usrse are likely to travel to visit an event. (Incidentally, the US Census Bureau&#39;s definition of <a href="https://www.census.gov/geo/reference/gtc/gtc_cbsa.html">Core-based Statistical Areas</a> is very similar, so we could extend this analysis to the US quite easily.)</p>
-<p>The full list of the 46 FUAs in the UK, including their constituent regions, can be found <a href="https://en.wikipedia.org/wiki/List_of_metropolitan_areas_in_the_United_Kingdom">here</a>. The source data files, including boundaries and populations, can be found <a href="http://database.espon.eu/db2/resource?idCat=43">here</a> under &#39;Functional Urban Areas database&#39; . Most of the urban regions are intuitively grouped. There are a few surprises, such as Bath being subsumed by the Bristol Metropolitan Area, but in general it is a good approximation for this initial analysis.</p>
-<p>Anotehr example is Eurostat&#39;s <a href="https://en.wikipedia.org/wiki/NUTS_2_statistical_regions_of_the_United_Kingdom">NUTS 2</a>, which divides the UK into 40 regions. Example regions include Greater Manchester, </p>
-<h2 id="adjusting-co-visitors"><a class="header-link" href="#adjusting-co-visitors"></a>Adjusting co-visitors</h2>
+<p>The full list of the 46 FUAs in the UK, including their constituent regions, can be found <a href="https://en.wikipedia.org/wiki/List_of_metropolitan_areas_in_the_United_Kingdom">here</a>. The source data files, including boundaries and populations, can be found <a href="http://database.espon.eu/db2/resource?idCat=43">here</a> under &#39;Functional Urban Areas database&#39; . Most of the urban regions are intuitively grouped.</p>
+<p>The FUA population statistics are estimates from 2006.</p>
+<h2 id="normalising"><a class="header-link" href="#normalising"></a>Normalising</h2>
 <p>Exact equation we use is:</p>
 <p>$$\frac{s_{ij}}{m_im_j}$$</p>
-<h2 id="clustering"><a class="header-link" href="#clustering"></a>Clustering</h2>
-<p>For simplicity in this initial investigation, we&#39;ll just allocate each group to one type. [LSA, hidden topic space of co-occurring keywords. Simple approach for now, but more work needed to </p>
-<h2 id="topic-extraction"><a class="header-link" href="#topic-extraction"></a>Topic extraction</h2>
+<h2 id="labelling-groups"><a class="header-link" href="#labelling-groups"></a>Labelling Groups</h2>
+<p>For simplicity in this initial investigation, we&#39;ll just allocate each group to one type. [LSA, hidden topic space of co-occurring keywords. Simple approach for now, but more work needed to .</p>
+<p>For example, <code>Web Design</code> rarely appears without <code>Web Technology</code>. We know that these tags represent a hidden concept -- the Web. </p>
+<p>These hidden topics were learnt on the whole dataset of Meetups. The number of clusters was decided using the Elbow Method, giving seven clusters. Each of the seven topics topic was the manually labeleld</p>
 <p>The topics used in the analysis are as provided by the Meetup API. Of course, the quality and semantics of these topics is not necessarily consistent across all gruops. For example, <code>Web Development</code>, <code>Web Technology</code>, and <code>Web Design</code> have much in common.</p>
 <h2 id="misc-"><a class="header-link" href="#misc-"></a>Misc.</h2>
 <ul class="list">

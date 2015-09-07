@@ -311,8 +311,8 @@ def main():
     #
 
     # Params
-    events_from = datetime(2012, 1, 1)
-    events_to = datetime(2015, 1, 1)
+    events_from = datetime(2012, 6, 1)
+    events_to = datetime(2015, 6, 1)
 
     # Load
     api = crawl_tools.get_meetup_api()
