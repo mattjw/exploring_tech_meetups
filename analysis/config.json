@@ -1,7 +1,0 @@
-{
-  "meetup_api_key": "3c591b4676447c305a5d1164326a2b64",
-  "geonames_username": "mattjw",
-  
-  "mongo_port": 27017,
-  "mongo_host": "127.0.0.1"
-}
