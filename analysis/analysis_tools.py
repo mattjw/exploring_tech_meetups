@@ -9,7 +9,7 @@
 
 
 """
-Support for crawling Meetup.
+Support for analysing Meetup data.
 """
 
 
