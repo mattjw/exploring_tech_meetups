@@ -15,7 +15,7 @@ The configuration file `config.json` should be structured as follows:
 
 ```
 {
-  "meetup_api_key": "<32-bit meetup API key>",
+  "meetup_api_key": "<32-character meetup API key>",
   "mongo_port": <mongodb-port>,
   "mongo_host": "<mongodb-hostname>"
 }
